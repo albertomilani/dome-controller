@@ -9,13 +9,13 @@ PLC_PORT = 23500
 USER_PORT = 23501
 
 def userToPlcCommand(command):
-    if command == 'OPEN_INF':
+    if command == 'OPEN_SUP':
         return (1 << 1)
-    elif command == 'CLOSE_INF':
+    elif command == 'OPEN_INF':
         return (1 << 2)
-    elif command == 'OPEN_SUP':
-        return (1 << 3)
     elif command == 'CLOSE_SUP':
+        return (1 << 3)
+    elif command == 'CLOSE_INF':
         return (1 << 4)
     else:
         return command
