@@ -10,13 +10,13 @@ USER_PORT = 23501
 
 def userToPlcCommand(command):
     if command == 'OPEN_SUP':
-        return (1 << 1)
+        return (1 << 0)
     elif command == 'OPEN_INF':
-        return (1 << 2)
+        return (1 << 1)
     elif command == 'CLOSE_SUP':
-        return (1 << 3)
+        return (1 << 2)
     elif command == 'CLOSE_INF':
-        return (1 << 4)
+        return (1 << 3)
     else:
         return command
 
@@ -33,16 +33,16 @@ def plcServer(queue):
     while True:
         conn, addr = s.accept()
         print('Connected by', addr)
+        # receiving status
+        data = conn.recv(2)
+        if data:
+            plc_status = plcToUserStatus(data)
         # sending command
         try:
             msg = queue.get(0)
             conn.sendall(bytes(msg))
         except Queue.Empty:
-            conn.sendall(bytes(1))
-        # getting status
-        data = conn.recv(1024)
-        if data:
-            plc_status = plcToUserStatus(data)
+            conn.sendall(bytes(0))
         conn.close() 
 
 def userServer(queue):
